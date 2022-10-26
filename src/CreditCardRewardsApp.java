@@ -29,7 +29,7 @@ public class CreditCardRewardsApp {
 
         br.close();
 
-        MonthlyReport report = MonthlyRewardsCalculator.makeReport(transactionList);
+        RewardsReport report = new MonthlyReport(transactionList);
         System.out.println(report);
     }
 

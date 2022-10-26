@@ -1,14 +1,26 @@
 public class Transaction {
-    String transactionName;
-    String date;
-    String merchantCode;
-    int amountCents;
+    private String transactionName;
+    private String date;
+    private String merchantCode;
+    private int amountCents;
 
     public Transaction(String transactionName, String date, String merchantCode, int amountCents) {
         this.transactionName = transactionName;
         this.date = date;
         this.merchantCode = merchantCode;
         this.amountCents = amountCents;
+    }
+
+
+    /**
+     * A function that calculates transaction-level points based on Rule 6 and 7.
+     * @return transaction level point
+     */
+    public int calculateTransLevelPoints() {
+
+        return transLevelPointsHelper(this.amountCents / 100,
+                this.merchantCode.equals(MerchantCode.SPORT_CHECK));
+
     }
 
     /**
@@ -28,17 +40,6 @@ public class Transaction {
         }
 
         return points;
-    }
-
-    /**
-     * A function that calculates transaction-level points based on Rule 6 and 7.
-     * @return transaction level point
-     */
-    public int calculateTransLevelPoints() {
-
-        return transLevelPointsHelper(this.amountCents / 100,
-                this.merchantCode.equals(MerchantCode.SPORT_CHECK));
-
     }
 
     @Override

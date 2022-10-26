@@ -2,40 +2,83 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MonthlyRewardsCalculator {
+/**
+ * A constant class only carries class-specific variables and methods.
+ * There is no object-specific state.
+ *
+ * Singleton can be passed as a variable to other methods
+ * make it a singleton class instead of a static class to benefit from polymorphism
+ */
+
+public class MonthlyRewardsCalculator implements RewardsCalculator {
 
     /**
-     * Makes monthly report based on a list of transactions
-     * @param transactionList
-     * @return monthly report which has the total rewards point as well as the transaction-level points
+     * staitc variable reference of single isntance of type MonthlyRewardsCalculator
      */
-    public static MonthlyReport makeReport(List<Transaction> transactionList) {
+    private static MonthlyRewardsCalculator singleCalculator = null;
 
-        int maxMonthlyPoint = MonthlyRewardsCalculator.calculateMaxMonthlyPoint(transactionList);
+    /**
+     * private constructor;
+     */
+    private MonthlyRewardsCalculator(){}
 
-        List<TransactionLevelPoint> levelPointList = new ArrayList<>();
-        for (Transaction transaction : transactionList) { // iterate and calculate points for each transaction
-            int levelPoint = transaction.calculateTransLevelPoints();
-            TransactionLevelPoint transactionLevelPoint = new TransactionLevelPoint(
-                                                                transaction.getTransactionName(),
-                                                                levelPoint);
-            levelPointList.add(transactionLevelPoint);
+    public static MonthlyRewardsCalculator getInstance() {
+        if (singleCalculator == null) {
+            singleCalculator = new MonthlyRewardsCalculator();
         }
+        return singleCalculator;
+    }
 
-        return new MonthlyReport(maxMonthlyPoint, levelPointList);
 
+
+    /**
+     * A function for calculating the maximum points earned for the month
+     *
+     * @param transactionList
+     * @return maximum monthly reward point
+     */
+    public int calculateRewards(List<Transaction> transactionList) {
+
+        HashMap<String, Integer> map = aggregateMonthlyTrans(transactionList); // aggregates all amounts for distinct merchants together
+
+        int spAmt = map.getOrDefault(MerchantCode.SPORT_CHECK, 0); // sports check
+        int thAmt = map.getOrDefault(MerchantCode.TIM_HORTONS, 0);; // timHortons
+        int subwayAmt = map.getOrDefault(MerchantCode.SUBWAY, 0); // subway
+        int otherAmt = map.getOrDefault(MerchantCode.OTHER, 0);
+
+        // get the cents
+        int remainingCents = spAmt % 100 + thAmt % 100 + subwayAmt % 100 + otherAmt % 100;
+
+        // get the points earned based on rules
+        int rulePoints = maximizeMonthlyRecursive(spAmt / 100, thAmt / 100, subwayAmt / 100);
+
+        // add rule points, other points, and remaining cents together
+        return rulePoints + otherAmt / 100 + remainingCents / 100;
     }
 
     /** ================================== start of helper ================================== */
+
+    /**
+     * Makes a list of merchants that are mentioned in the reward rules.
+     * @return a list of merchants
+     */
+    private List<String> makeRewardMerchantList() {
+        List<String> merchantsForReward = new ArrayList<>();
+        merchantsForReward.add(MerchantCode.SPORT_CHECK);
+        merchantsForReward.add(MerchantCode.TIM_HORTONS);
+        merchantsForReward.add(MerchantCode.SUBWAY);
+
+        return merchantsForReward;
+    }
 
     /**
      * A helper function that aggregates the monthly expenditure for each merchant.
      * @param transactions
      * @return a hashmap
      */
-    private static HashMap<String, Integer> aggregateMonthlyTrans(List<Transaction> transactions) {
+    private HashMap<String, Integer> aggregateMonthlyTrans(List<Transaction> transactions) {
 
-        List<String> merchantsForReward = MerchantCode.makeRewardMerchantList(); // gets a list of all the merchants mentioned in the rules
+        List<String> merchantsForReward = makeRewardMerchantList(); // gets a list of all the merchants mentioned in the rules
 
         HashMap<String, Integer> result = new HashMap<>();
 
@@ -64,7 +107,7 @@ public class MonthlyRewardsCalculator {
      * @param subwayAmt dollar amount left for subway
      * @return maximum monthly reward point
      */
-    private static int maximizeMonthlyRecursive(int spAmt, int thAmt, int subwayAmt) {
+    private int maximizeMonthlyRecursive(int spAmt, int thAmt, int subwayAmt) {
         // base case: all of them are 0
         if ((spAmt == 0) && (thAmt == 0) && (subwayAmt == 0)) {
             return 0;
@@ -97,30 +140,6 @@ public class MonthlyRewardsCalculator {
         return points;
     }
 
-    /**
-     * A helper function for calculating the maximum points earned for the month
-     *
-     * @param transactionList
-     * @return maximum monthly reward point
-     */
-    private static int calculateMaxMonthlyPoint(List<Transaction> transactionList) {
-
-        HashMap<String, Integer> map = aggregateMonthlyTrans(transactionList); // aggregates all amounts for distinct merchants together
-
-        int spAmt = map.getOrDefault(MerchantCode.SPORT_CHECK, 0); // sports check
-        int thAmt = map.getOrDefault(MerchantCode.TIM_HORTONS, 0);; // timHortons
-        int subwayAmt = map.getOrDefault(MerchantCode.SUBWAY, 0); // subway
-        int otherAmt = map.getOrDefault(MerchantCode.OTHER, 0);
-
-        // get the cents
-        int remainingCents = spAmt % 100 + thAmt % 100 + subwayAmt % 100 + otherAmt % 100;
-
-        // get the points earned based on rules
-        int rulePoints = maximizeMonthlyRecursive(spAmt / 100, thAmt / 100, subwayAmt / 100);
-
-        // add rule points, other points, and remaining cents together
-        return rulePoints + otherAmt / 100 + remainingCents / 100;
-    }
 
     /** ================================== end of helper ================================== */
 }
