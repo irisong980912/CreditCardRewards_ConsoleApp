@@ -114,20 +114,35 @@ public class MonthlyRule implements CompositeRule {
         int points;
 
         if (spAmt >= 75 && thAmt >= 25 && subwayAmt >= 25) { // rule 1: 500 points for sportcheck $75,  timHortons $25, subway $25
+            int numSp = spAmt / 75;
+            int numTh = thAmt / 25;
+            int numSubway = subwayAmt / 25;
+            int minNumCoupon = Math.min(numSp, Math.min(numTh, numSubway));
 
-            points = 500 + maximizeMonthlyRecursive(spAmt - 75, thAmt - 25, subwayAmt - 25);
+            points = 500 * minNumCoupon + maximizeMonthlyRecursive(spAmt - minNumCoupon * 75, thAmt - minNumCoupon * 25, subwayAmt - minNumCoupon * 25);
 
         } else if (spAmt >= 75 && thAmt >= 25 && subwayAmt < 25) { // rule 2: 300 points for sportcheck $75,  timHortons $25
 
-            points = 300 + maximizeMonthlyRecursive(spAmt - 75, thAmt - 25, subwayAmt);
+            int numSp = spAmt / 75;
+            int numTh = thAmt / 25;
+            int minNumCoupon = Math.min(numSp,numTh);
+
+            points = 300 * minNumCoupon + maximizeMonthlyRecursive(spAmt - minNumCoupon * 75, thAmt - minNumCoupon * 25, subwayAmt);
 
         } else if (spAmt >= 25 && thAmt >= 10 && subwayAmt >= 10) { // rule 4: 150 points for sportcheck $25,  timHortons $10, subway $10
 
-            points = 150 + maximizeMonthlyRecursive(spAmt - 25, thAmt - 10, subwayAmt - 10);
+            int numSp = spAmt / 25;
+            int numTh = thAmt / 10;
+            int numSubway = subwayAmt / 10;
+            int minNumCoupon = Math.min(numSp, Math.min(numTh, numSubway));
+
+            points = 150 * minNumCoupon + maximizeMonthlyRecursive(spAmt - minNumCoupon * 25, thAmt - minNumCoupon * 10, subwayAmt - minNumCoupon * 10);
 
         } else if (spAmt >= 20) { // rule 6: 75 points for sportcheck $20
 
-            points = 75 + maximizeMonthlyRecursive(spAmt - 20, thAmt, subwayAmt);
+            int minNumCoupon = spAmt / 20;
+
+            points = 75 * minNumCoupon + maximizeMonthlyRecursive(spAmt - minNumCoupon * 20, thAmt, subwayAmt);
 
         } else { // rule 7: 1 point for the remaining.
 
