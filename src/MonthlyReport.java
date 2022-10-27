@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlyReport extends RewardsReport {
+public class MonthlyReport implements RewardsReport {
 
     /** total maximum rewards point for the requested month */
-    private int maximum_monthly_rewards_point;
+    private int monthlyRewardsPoint;
 
     /** maximum points for each individual transaction in the month */
-    private List<TransactionLevelPoint> transaction_level_points_list;
+    private List<TransactionLevelPoint> transactionPointsList;
 
     private CompositeRule rule;
 
@@ -21,7 +21,7 @@ public class MonthlyReport extends RewardsReport {
      * @return monthly report which has the total rewards point as well as the transaction-level points
      */
     @Override
-    protected void makeReport(List<Transaction> transactionList) {
+    public void makeReport(List<Transaction> transactionList) {
 
         this.rule = MonthlyRule.getInstance();
 
@@ -33,14 +33,14 @@ public class MonthlyReport extends RewardsReport {
             levelPointList.add(transactionLevelPoint);
         }
 
-        this.maximum_monthly_rewards_point = maxMonthlyPoint;
-        this.transaction_level_points_list = levelPointList;
+        this.monthlyRewardsPoint = maxMonthlyPoint;
+        this.transactionPointsList = levelPointList;
 
     }
 
     @Override
     public String toString() {
-        return "Total Points: " + maximum_monthly_rewards_point + "\n" +
-                "Transaction Level Points: \n" + transaction_level_points_list;
+        return "Total Points: " + monthlyRewardsPoint + "\n" +
+                "Transaction Level Points: \n" + transactionPointsList;
     }
 }

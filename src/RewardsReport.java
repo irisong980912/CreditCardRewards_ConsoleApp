@@ -1,6 +1,6 @@
 import java.util.List;
 
-public abstract class RewardsReport {
+public interface RewardsReport {
 
-    protected abstract void makeReport(List<Transaction> transactionList);
+    public void makeReport(List<Transaction> transactionList);
 }
