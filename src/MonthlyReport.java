@@ -9,7 +9,7 @@ public class MonthlyReport extends RewardsReport {
     /** maximum points for each individual transaction in the month */
     private List<TransactionLevelPoint> transaction_level_points_list;
 
-    private RewardsCalculator calculator;
+    private CompositeRule rule;
 
     public MonthlyReport(List<Transaction> transactionList) {
         this.makeReport(transactionList);
@@ -23,16 +23,13 @@ public class MonthlyReport extends RewardsReport {
     @Override
     protected void makeReport(List<Transaction> transactionList) {
 
-        RewardsCalculator calculator = MonthlyRewardsCalculator.getInstance();
-        this.calculator = calculator;
-        int maxMonthlyPoint = calculator.calculateRewards(transactionList);
+        this.rule = MonthlyRule.getInstance();
+
+        int maxMonthlyPoint = rule.calculatePoint(transactionList);
 
         List<TransactionLevelPoint> levelPointList = new ArrayList<>();
         for (Transaction transaction : transactionList) { // iterate and calculate points for each transaction
-            int levelPoint = transaction.calculateTransLevelPoints();
-            TransactionLevelPoint transactionLevelPoint = new TransactionLevelPoint(
-                    transaction.getTransactionName(),
-                    levelPoint);
+            TransactionLevelPoint transactionLevelPoint = transaction.getTransactionLevelPoint();
             levelPointList.add(transactionLevelPoint);
         }
 

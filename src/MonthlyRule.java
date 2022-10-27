@@ -9,27 +9,24 @@ import java.util.List;
  * Singleton can be passed as a variable to other methods
  * make it a singleton class instead of a static class to benefit from polymorphism
  */
-
-public class MonthlyRewardsCalculator implements RewardsCalculator {
+public class MonthlyRule implements CompositeRule {
 
     /**
-     * staitc variable reference of single isntance of type MonthlyRewardsCalculator
+     * staitc variable reference of single instance of type MonthlyRule
      */
-    private static MonthlyRewardsCalculator singleCalculator = null;
+    private static MonthlyRule singleInstance = null;
 
     /**
      * private constructor;
      */
-    private MonthlyRewardsCalculator(){}
+    private MonthlyRule(){}
 
-    public static MonthlyRewardsCalculator getInstance() {
-        if (singleCalculator == null) {
-            singleCalculator = new MonthlyRewardsCalculator();
+    public static MonthlyRule getInstance() {
+        if (singleInstance == null) {
+            singleInstance = new MonthlyRule();
         }
-        return singleCalculator;
+        return singleInstance;
     }
-
-
 
     /**
      * A function for calculating the maximum points earned for the month
@@ -37,7 +34,8 @@ public class MonthlyRewardsCalculator implements RewardsCalculator {
      * @param transactionList
      * @return maximum monthly reward point
      */
-    public int calculateRewards(List<Transaction> transactionList) {
+    @Override
+    public int calculatePoint(List<Transaction> transactionList) {
 
         HashMap<String, Integer> map = aggregateMonthlyTrans(transactionList); // aggregates all amounts for distinct merchants together
 
@@ -86,7 +84,7 @@ public class MonthlyRewardsCalculator implements RewardsCalculator {
 
             String merchantCode = t.getMerchantCode();
 
-            if (!merchantsForReward.contains(merchantCode)) { // if not in the list, then count towards "other" to apply Rule 7
+            if (!merchantsForReward.contains(merchantCode)) { // if not in the list, then count towards "other" to apply CompositeRule 7
                 merchantCode = MerchantCode.OTHER;
             }
 
@@ -99,7 +97,7 @@ public class MonthlyRewardsCalculator implements RewardsCalculator {
 
     /**
      * A greedy helper function for calculating the maximum points earned for the month
-     * Rule 3 and Rule 5 are ignored because they are not as cost-efficient as other rules combined.
+     * CompositeRule 3 and CompositeRule 5 are ignored because they are not as cost-efficient as other rules combined.
      * For reasons of elimination, please refer to README.md
      *
      * @param spAmt dollar amount left for sportcheck

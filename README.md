@@ -20,18 +20,18 @@ Then, run `CreditCardRewardsApp`
 
 ## About Reward Rules
 
-After calculation, I found that Rule 3 and Rule 5 are less cost-efficient than a combination of Rule 6 and Rule 7.
+After calculation, I found that CompositeRule 3 and CompositeRule 5 are less cost-efficient than a combination of CompositeRule 6 and CompositeRule 7.
 Therefore, I did not consider them when calculating the maximum monthly reward point
 
-### Why Rule 3?
-Rule 3: 200 points for every $75 spend at Sport Check
+### Why CompositeRule 3?
+CompositeRule 3: 200 points for every $75 spend at Sport Check
 
-which can be substituted by 3 * Rule 6 + 15 * Rule 7 = 3 * 75 + 15 = 240 points 
+which can be substituted by 3 * CompositeRule 6 + 15 * CompositeRule 7 = 3 * 75 + 15 = 240 points 
 
-### Why Rule 5?
-Rule 5: 75 points for every $25 spend at Sport Check, $10 spend at Tim Hortons
+### Why CompositeRule 5?
+CompositeRule 5: 75 points for every $25 spend at Sport Check, $10 spend at Tim Hortons
 
-which can be substituted by 1 * Rule 6 + 15 * Rule 7 = 75 + 15 = 90 points
+which can be substituted by 1 * CompositeRule 6 + 15 * CompositeRule 7 = 75 + 15 = 90 points
 
 ## Finally
 Thank you for taking the time reviewing my submission!
